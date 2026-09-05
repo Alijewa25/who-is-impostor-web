@@ -3,191 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPOSTOR — Party Word Game</title>
+    <title>IMPOSTOR — Online Party Game</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background-color: #0f0c1b;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow-x: hidden;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 8%;
-            background: rgba(15, 12, 27, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #fff;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background-color: #0f0c1b; color: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background: rgba(15, 12, 27, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 2px; }
         .logo span { color: #ff0055; }
-
-        nav ul { display: flex; list-style: none; gap: 30px; }
-        nav a { color: #a0a0b8; text-decoration: none; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .hero-title {
-            font-size: 40px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .hero-title span { color: #ff0055; text-shadow: 0 0 20px rgba(255, 0, 85, 0.6); }
-
-        .game-card {
-            background: #181528;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 30px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            text-align: left;
-            position: relative;
-        }
-
-        .game-card h2 { font-size: 20px; color: #fff; margin-bottom: 15px; text-align: center; }
-
-        label {
-            display: block;
-            color: #8a8aa3;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 15px;
-            margin-bottom: 6px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 14px 16px;
-            background: #0f0c1b;
-            border: 1px solid #2a2640;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-        }
-
-        input:focus, select:focus { border-color: #ff0055; }
-
-        .btn-action {
-            width: 100%;
-            padding: 15px;
-            background: #ff0055;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 5px 20px rgba(255, 0, 85, 0.4);
-            transition: 0.2s;
-        }
-
+        main { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; flex-grow: 1; }
+        .hero-title { font-size: 36px; font-weight: 900; margin-bottom: 15px; }
+        .hero-title span { color: #ff0055; }
+        .game-card { background: #181528; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 30px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); text-align: left; }
+        .game-card h2 { font-size: 20px; margin-bottom: 15px; text-align: center; }
+        label { display: block; color: #8a8aa3; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-top: 15px; margin-bottom: 6px; }
+        input, select { width: 100%; padding: 14px; background: #0f0c1b; border: 1px solid #2a2640; border-radius: 10px; color: #fff; font-size: 15px; outline: none; }
+        .btn-action { width: 100%; padding: 15px; background: #ff0055; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 14px; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.2s; }
         .btn-action:hover { background: #e0004c; }
-        .btn-secondary { background: #2a2640; box-shadow: none; }
-        .btn-secondary:hover { background: #3d375c; }
-
+        .btn-secondary { background: #2a2640; }
         .hidden { display: none !important; }
-
-        /* ROOM PIN DISPLAY */
-        .pin-box {
-            background: #0f0c1b;
-            border: 2px dashed #ff0055;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            margin: 15px 0;
-        }
-
-        .pin-code {
-            font-size: 36px;
-            font-weight: 900;
-            letter-spacing: 6px;
-            color: #ff0055;
-        }
-
-        /* PLAYER LIST */
-        .player-list {
-            list-style: none;
-            margin: 15px 0;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .player-item {
-            background: #0f0c1b;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            border: 1px solid #2a2640;
-        }
-
-        /* COUNTDOWN OVERLAY */
-        .countdown {
-            font-size: 80px;
-            font-weight: 900;
-            color: #ff0055;
-            text-align: center;
-            animation: pulse 1s infinite;
-        }
-
-        /* FLIP CARD */
+        .pin-box { background: #0f0c1b; border: 2px dashed #ff0055; border-radius: 12px; padding: 15px; text-align: center; margin: 15px 0; }
+        .pin-code { font-size: 36px; font-weight: 900; letter-spacing: 6px; color: #ff0055; }
+        .player-list { list-style: none; margin: 15px 0; max-height: 180px; overflow-y: auto; }
+        .player-item { background: #0f0c1b; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border: 1px solid #2a2640; }
+        .countdown { font-size: 80px; font-weight: 900; color: #ff0055; text-align: center; }
         .card-container { perspective: 1000px; margin: 20px 0; height: 140px; }
         .flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .flipper.flipped { transform: rotateY(180deg); }
-        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; text-align: center; padding: 10px; }
+        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; text-align: center; }
         .front { background: #221d38; color: #8a8aa3; border: 2px dashed #3d3560; }
         .back { background: #0077ff; color: #fff; transform: rotateY(180deg); }
         .back.impostor { background: #ff0055; }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        @media (max-width: 768px) { nav { display: none; } }
     </style>
-
-    <!-- FIREBASE SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
@@ -195,31 +41,23 @@
 
     <header>
         <div class="logo">PLAY<span>IMPOSTOR</span></div>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Rules</a></li>
-            </ul>
-        </nav>
     </header>
 
     <main>
-        <h1 class="hero-title">FIND THE <span>IMPOSTOR</span></h1>
+        <h1 class="hero-title">ONLINE <span>IMPOSTOR</span></h1>
 
         <div class="game-card">
 
-            <!-- 1. ENTRY SCREEN -->
             <div id="entry-screen">
-                <h2>JOIN OR CREATE ROOM</h2>
-                <button class="btn-action" onclick="showScreen('create-screen')">Create New Room</button>
-                <button class="btn-action btn-secondary" onclick="showScreen('join-screen')">Join With PIN</button>
+                <h2>MULTIPLAYER MODE</h2>
+                <button class="btn-action" onclick="showScreen('create-screen')">Create Room (Host)</button>
+                <button class="btn-action btn-secondary" onclick="showScreen('join-screen')">Join Room (PIN)</button>
             </div>
 
-            <!-- 2. CREATE ROOM SCREEN -->
             <div id="create-screen" class="hidden">
                 <h2>CREATE ROOM</h2>
                 <label>Your Nickname</label>
-                <input type="text" id="host-name" placeholder="e.g. Alex" maxlength="12">
+                <input type="text" id="host-name" placeholder="Enter nickname">
 
                 <label>Word Set</label>
                 <select id="category">
@@ -229,26 +67,24 @@
                     <option value="movies">Movies & Shows</option>
                 </select>
 
-                <button class="btn-action" onclick="createRoom()">Create Session</button>
+                <button class="btn-action" onclick="createRoom()">Create Room</button>
                 <button class="btn-action btn-secondary" onclick="showScreen('entry-screen')">Back</button>
             </div>
 
-            <!-- 3. JOIN ROOM SCREEN -->
             <div id="join-screen" class="hidden">
                 <h2>JOIN ROOM</h2>
                 <label>Room PIN</label>
                 <input type="number" id="join-pin" placeholder="e.g. 4821">
 
                 <label>Your Nickname</label>
-                <input type="text" id="player-name" placeholder="e.g. Sarah" maxlength="12">
+                <input type="text" id="player-name" placeholder="Enter nickname">
 
                 <button class="btn-action" onclick="joinRoom()">Join Game</button>
                 <button class="btn-action btn-secondary" onclick="showScreen('entry-screen')">Back</button>
             </div>
 
-            <!-- 4. LOBBY SCREEN -->
             <div id="lobby-screen" class="hidden">
-                <p style="text-align: center; color: #8a8aa3; font-size: 12px;">SHARE THIS PIN WITH FRIENDS</p>
+                <p style="text-align: center; color: #8a8aa3; font-size: 12px;">ROOM PIN</p>
                 <div class="pin-box">
                     <div class="pin-code" id="display-pin">----</div>
                 </div>
@@ -257,16 +93,14 @@
                 <ul class="player-list" id="player-list"></ul>
 
                 <button id="start-btn" class="btn-action hidden" onclick="startCountdown()">Start Game</button>
-                <p id="waiting-msg" style="text-align:center; color:#8a8aa3; font-size:13px; margin-top:10px;">Waiting for host to start...</p>
+                <p id="waiting-msg" style="text-align:center; color:#8a8aa3; font-size:13px; margin-top:10px;">Waiting for host...</p>
             </div>
 
-            <!-- 5. COUNTDOWN SCREEN -->
             <div id="countdown-screen" class="hidden">
                 <h2>GET READY!</h2>
                 <div class="countdown" id="countdown-timer">3</div>
             </div>
 
-            <!-- 6. GAMEPLAY (ROLE) SCREEN -->
             <div id="game-screen" class="hidden">
                 <h2 id="role-player-name">Player</h2>
                 
@@ -278,32 +112,30 @@
                 </div>
 
                 <button id="reveal-btn" class="btn-action" onclick="flipCard()">Show My Word</button>
-                <button id="host-reset-btn" class="btn-action btn-secondary hidden" onclick="resetRoom()">Next Round / New Game</button>
+                <button id="host-reset-btn" class="btn-action btn-secondary hidden" onclick="resetRoom()">Next Round</button>
             </div>
 
         </div>
     </main>
 
 <script>
-    // FIREBASE CONFIGURATION (Tamamilə Pulsuz Realtime Database)
     const firebaseConfig = {
-        databaseURL: "https://impostor-game-default-rtdb.firebaseio.com" // Pulsuz istifadə üçün açıq test bazası
+        databaseURL: "https://impostor-game-default-rtdb.firebaseio.com"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const wordList = {
-        food: ["Burger", "Pizza", "Sushi", "Tacos", "Pasta", "Ice Cream", "Ramen", "Shawarma"],
-        cities: ["New York", "London", "Tokyo", "Paris", "Rome", "Dubai", "Istanbul", "Sydney"],
-        objects: ["Smartphone", "Backpack", "Headphones", "Wristwatch", "Sunglasses", "Camera"],
-        movies: ["Inception", "Titanic", "Avatar", "The Matrix", "Gladiator", "Interstellar"]
+        food: ["Burger", "Pizza", "Sushi", "Tacos", "Pasta", "Ramen", "Ice Cream"],
+        cities: ["New York", "London", "Tokyo", "Paris", "Rome", "Dubai", "Istanbul"],
+        objects: ["Smartphone", "Backpack", "Headphones", "Wristwatch", "Sunglasses"],
+        movies: ["Inception", "Titanic", "Avatar", "The Matrix", "Gladiator"]
     };
 
     let currentPin = null;
     let myName = null;
     let isHost = false;
 
-    // Səhifə yüklənəndə əvvəlki sessiyanı yoxlayır (Auto-Rejoin)
     window.onload = () => {
         const savedPin = localStorage.getItem('impostor_pin');
         const savedName = localStorage.getItem('impostor_name');
@@ -321,7 +153,7 @@
 
     function createRoom() {
         const hostName = document.getElementById('host-name').value.trim();
-        if (!hostName) return alert('Please enter your nickname!');
+        if (!hostName) return alert('Enter nickname!');
 
         currentPin = Math.floor(1000 + Math.random() * 9000).toString();
         myName = hostName;
@@ -346,13 +178,10 @@
         const pin = document.getElementById('join-pin').value.trim();
         const playerName = document.getElementById('player-name').value.trim();
 
-        if (!pin || !playerName) return alert('Enter both PIN and Nickname!');
+        if (!pin || !playerName) return alert('Enter PIN and Nickname!');
 
         db.ref('rooms/' + pin).once('value', snapshot => {
-            if (!snapshot.exists()) {
-                alert('Room not found! Check PIN.');
-                return;
-            }
+            if (!snapshot.exists()) return alert('Room not found!');
 
             currentPin = pin;
             myName = playerName;
@@ -383,13 +212,11 @@
         db.ref('rooms/' + currentPin).on('value', snapshot => {
             const room = snapshot.val();
             if (!room) {
-                alert('Room closed.');
                 localStorage.clear();
                 location.reload();
                 return;
             }
 
-            // Otaq statusuna uyğun ekran dəyişikliyi
             if (room.state === 'lobby') {
                 showScreen('lobby-screen');
                 updateLobby(room);
@@ -429,8 +256,6 @@
 
     function startCountdown() {
         if (!isHost) return;
-        
-        // Rol və Sözləri təyin et
         db.ref('rooms/' + currentPin).once('value', snapshot => {
             const room = snapshot.val();
             const players = Object.keys(room.players);
