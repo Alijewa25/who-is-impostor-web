@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who is the Impostor?</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #0b132b; color: #fff; text-align: center; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: #1c2541; border-radius: 20px; padding: 25px; width: 100%; max-width: 420px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
+        h1 { color: #ff007f; margin-bottom: 20px; font-size: 28px; }
+        label { display: block; text-align: left; margin-top: 15px; font-weight: 600; color: #8d99ae; }
+        input, select, textarea, button { width: 100%; padding: 14px; margin-top: 8px; border-radius: 12px; border: none; font-size: 16px; outline: none; }
+        input, select, textarea { background: #0b132b; color: #fff; border: 1px solid #3a506b; }
+        textarea { resize: vertical; height: 70px; }
+        button { background: #ff007f; color: #fff; font-weight: bold; cursor: pointer; transition: transform 0.2s, background 0.2s; margin-top: 15px; }
+        button:hover { background: #e0006c; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+        .hidden { display: none !important; }
+
+        /* 3D Flip Card Styles */
+        .card-container { perspective: 1000px; margin: 25px 0; height: 160px; }
+        .flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flipper.flipped { transform: rotateY(180deg); }
+        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; padding: 15px; box-sizing: border-radius; }
+        .front { background: #3a506b; color: #5bc0be; border: 2px dashed #5bc0be; }
+        .back { background: #0077b6; color: #fff; transform: rotateY(180deg); }
+        .back.impostor { background: #d90429; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Who is the Impostor? 🕵️‍♂️</h1>
+
+    <!-- 1. SETUP SCREEN -->
+    <div id="setup-screen">
+        <label for="player-count">Number of Players:</label>
+        <input type="number" id="player-count" min="3" max="15" value="4">
+        
+        <label for="category">Category:</label>
+        <select id="category" onchange="toggleCustomCategory()">
+            <option value="food">Food & Drinks 🍔</option>
+            <option value="cities">Global Cities 🏙️</option>
+            <option value="objects">Everyday Objects 📦</option>
+            <option value="movies">Movies & Shows 🎬</option>
+            <option value="custom">Custom Words... ✨</option>
+        </select>
+
+        <div id="custom-words-wrapper" class="hidden">
+            <label for="custom-words">Custom Words (comma separated):</label>
+            <textarea id="custom-words" placeholder="e.g. Bitcoin, Coffee, Guitar, Astronaut"></textarea>
+        </div>
+
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <!-- 2. ROLE CHECK SCREEN -->
+    <div id="role-screen" class="hidden">
+        <h2 id="player-title">Player 1</h2>
+        <p>Pass the phone to this player. Tap to flip and reveal the secret word!</p>
+        
+        <div class="card-container">
+            <div id="flipper" class="flipper">
+                <div class="front">Tap to Reveal 🔒</div>
+                <div id="role-back" class="back">...</div>
+            </div>
+        </div>
+
+        <button id="reveal-btn" onclick="flipCard()">Show Word</button>
+        <button id="next-btn" class="hidden" onclick="nextPlayer()">Pass to Next Player</button>
+    </div>
+
+    <!-- 3. GAMEPLAY SCREEN -->
+    <div id="game-screen" class="hidden">
+        <h2>Game Started! 🚀</h2>
+        <p>Take turns giving 1 subtle clue about the word.</p>
+        <p style="color: #8d99ae; font-size: 14px; margin-top: 15px;">The Impostor must blend in without getting caught!</p>
+        <button onclick="resetGame()">Play Again</button>
+    </div>
+</div>
+
+<script>
+    const wordList = {
+        food: ["Burger", "Pizza", "Sushi", "Tacos", "Pasta", "Ice Cream", "Pancakes", "Croissant", "Ramen", "Shawarma", "Cheesecake", "Waffles"],
+        cities: ["New York", "London", "Tokyo", "Paris", "Rome", "Dubai", "Sydney", "Barcelona", "Berlin", "Istanbul", "Toronto", "Rio de Janeiro"],
+        objects: ["Smartphone", "Backpack", "Headphones", "Wristwatch", "Sunglasses", "Water Bottle", "Keyring", "Umbrella", "Laptop", "Camera"],
+        movies: ["Inception", "Titanic", "Avatar", "The Matrix", "Gladiator", "Interstellar", "Jaws", "Star Wars", "The Avengers", "Harry Potter"]
+    };
+
+    let totalPlayers, impostorIndex, currentWord, currentPlayer = 0;
+
+    function toggleCustomCategory() {
+        const category = document.getElementById('category').value;
+        const customWrapper = document.getElementById('custom-words-wrapper');
+        if (category === 'custom') {
+            customWrapper.classList.remove('hidden');
+        } else {
+            customWrapper.classList.add('hidden');
+        }
+    }
+
+    function startGame() {
+        totalPlayers = parseInt(document.getElementById('player-count').value);
+        const category = document.getElementById('category').value;
+        let selectedWords = [];
+
+        if (category === 'custom') {
+            const rawCustom = document.getElementById('custom-words').value;
+            selectedWords = rawCustom.split(',').map(w => w.trim()).filter(w => w.length > 0);
+            if (selectedWords.length === 0) {
+                alert('Please enter at least 1 custom word separated by commas.');
+                return;
+            }
+        } else {
+            selectedWords = wordList[category];
+        }
+        
+        currentWord = selectedWords[Math.floor(Math.random() * selectedWords.length)];
+        impostorIndex = Math.floor(Math.random() * totalPlayers);
+        currentPlayer = 0;
+
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('role-screen').classList.remove('hidden');
+        updatePlayerUI();
+    }
+
+    function updatePlayerUI() {
+        document.getElementById('player-title').innerText = `Player ${currentPlayer + 1}`;
+        document.getElementById('flipper').classList.remove('flipped');
+        document.getElementById('reveal-btn').classList.remove('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+    }
+
+    function flipCard() {
+        const flipper = document.getElementById('flipper');
+        const roleBack = document.getElementById('role-back');
+
+        roleBack.classList.remove('impostor');
+
+        if (currentPlayer === impostorIndex) {
+            roleBack.innerText = "YOU ARE THE IMPOSTOR! 🤫";
+            roleBack.classList.add('impostor');
+        } else {
+            roleBack.innerText = currentWord;
+        }
+
+        flipper.classList.add('flipped');
+        document.getElementById('reveal-btn').classList.add('hidden');
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function nextPlayer() {
+        currentPlayer++;
+        if (currentPlayer < totalPlayers) {
+            updatePlayerUI();
+        } else {
+            document.getElementById('role-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+        }
+    }
+
+    function resetGame() {
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('setup-screen').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
