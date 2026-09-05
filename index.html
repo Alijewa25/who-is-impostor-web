@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMPOSTOR — Online Party Game</title>
+    <title>IMPOSTOR — Party Game</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
         body { background-color: #0f0c1b; color: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
@@ -17,19 +17,21 @@
         .game-card h2 { font-size: 20px; margin-bottom: 15px; text-align: center; }
         label { display: block; color: #8a8aa3; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-top: 15px; margin-bottom: 6px; }
         input, select { width: 100%; padding: 14px; background: #0f0c1b; border: 1px solid #2a2640; border-radius: 10px; color: #fff; font-size: 15px; outline: none; }
+        input:focus, select:focus { border-color: #ff0055; }
         .btn-action { width: 100%; padding: 15px; background: #ff0055; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 14px; text-transform: uppercase; cursor: pointer; margin-top: 15px; transition: 0.2s; }
         .btn-action:hover { background: #e0004c; }
         .btn-secondary { background: #2a2640; }
         .hidden { display: none !important; }
-        .pin-box { background: #0f0c1b; border: 2px dashed #ff0055; border-radius: 12px; padding: 15px; text-align: center; margin: 15px 0; }
-        .pin-code { font-size: 36px; font-weight: 900; letter-spacing: 6px; color: #ff0055; }
+        .room-info-box { background: #0f0c1b; border: 1px solid #2a2640; border-radius: 12px; padding: 15px; text-align: center; margin: 15px 0; }
+        .room-title-display { font-size: 20px; font-weight: 800; color: #fff; }
+        .pin-code-display { font-size: 24px; font-weight: 900; letter-spacing: 4px; color: #ff0055; margin-top: 5px; }
         .player-list { list-style: none; margin: 15px 0; max-height: 180px; overflow-y: auto; }
-        .player-item { background: #0f0c1b; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border: 1px solid #2a2640; }
+        .player-item { background: #0f0c1b; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; border: 1px solid #2a2640; font-size: 14px; }
         .countdown { font-size: 80px; font-weight: 900; color: #ff0055; text-align: center; }
         .card-container { perspective: 1000px; margin: 20px 0; height: 140px; }
         .flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .flipper.flipped { transform: rotateY(180deg); }
-        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; text-align: center; }
+        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; text-align: center; padding: 10px; }
         .front { background: #221d38; color: #8a8aa3; border: 2px dashed #3d3560; }
         .back { background: #0077ff; color: #fff; transform: rotateY(180deg); }
         .back.impostor { background: #ff0055; }
@@ -48,16 +50,25 @@
 
         <div class="game-card">
 
+            <!-- MAIN MENU -->
             <div id="entry-screen">
-                <h2>MULTIPLAYER MODE</h2>
-                <button class="btn-action" onclick="showScreen('create-screen')">Create Room (Host)</button>
-                <button class="btn-action btn-secondary" onclick="showScreen('join-screen')">Join Room (PIN)</button>
+                <h2>NO REGISTRATION NEEDED</h2>
+                <button class="btn-action" onclick="showScreen('create-screen')">Create Room</button>
+                <button class="btn-action btn-secondary" onclick="showScreen('join-screen')">Join Room</button>
             </div>
 
+            <!-- CREATE ROOM -->
             <div id="create-screen" class="hidden">
                 <h2>CREATE ROOM</h2>
+                
+                <label>Room Name</label>
+                <input type="text" id="create-room-name" placeholder="e.g. MafiaClub">
+
+                <label>Room PIN</label>
+                <input type="number" id="create-room-pin" placeholder="e.g. 1234">
+
                 <label>Your Nickname</label>
-                <input type="text" id="host-name" placeholder="Enter nickname">
+                <input type="text" id="host-nickname" placeholder="e.g. Alex">
 
                 <label>Word Set</label>
                 <select id="category">
@@ -71,36 +82,44 @@
                 <button class="btn-action btn-secondary" onclick="showScreen('entry-screen')">Back</button>
             </div>
 
+            <!-- JOIN ROOM -->
             <div id="join-screen" class="hidden">
                 <h2>JOIN ROOM</h2>
+
+                <label>Room Name</label>
+                <input type="text" id="join-room-name" placeholder="e.g. MafiaClub">
+
                 <label>Room PIN</label>
-                <input type="number" id="join-pin" placeholder="e.g. 4821">
+                <input type="number" id="join-room-pin" placeholder="e.g. 1234">
 
                 <label>Your Nickname</label>
-                <input type="text" id="player-name" placeholder="Enter nickname">
+                <input type="text" id="join-nickname" placeholder="e.g. Sarah">
 
-                <button class="btn-action" onclick="joinRoom()">Join Game</button>
+                <button class="btn-action" onclick="joinRoom()">Join Room</button>
                 <button class="btn-action btn-secondary" onclick="showScreen('entry-screen')">Back</button>
             </div>
 
+            <!-- LOBBY -->
             <div id="lobby-screen" class="hidden">
-                <p style="text-align: center; color: #8a8aa3; font-size: 12px;">ROOM PIN</p>
-                <div class="pin-box">
-                    <div class="pin-code" id="display-pin">----</div>
+                <div class="room-info-box">
+                    <div class="room-title-display" id="display-room-name">ROOM</div>
+                    <div class="pin-code-display">PIN: <span id="display-room-pin">----</span></div>
                 </div>
 
                 <label>Connected Players (<span id="player-count">0</span>)</label>
                 <ul class="player-list" id="player-list"></ul>
 
                 <button id="start-btn" class="btn-action hidden" onclick="startCountdown()">Start Game</button>
-                <p id="waiting-msg" style="text-align:center; color:#8a8aa3; font-size:13px; margin-top:10px;">Waiting for host...</p>
+                <p id="waiting-msg" style="text-align:center; color:#8a8aa3; font-size:13px; margin-top:10px;">Waiting for host to start...</p>
             </div>
 
+            <!-- COUNTDOWN -->
             <div id="countdown-screen" class="hidden">
                 <h2>GET READY!</h2>
                 <div class="countdown" id="countdown-timer">3</div>
             </div>
 
+            <!-- GAMEPLAY -->
             <div id="game-screen" class="hidden">
                 <h2 id="role-player-name">Player</h2>
                 
@@ -132,16 +151,23 @@
         movies: ["Inception", "Titanic", "Avatar", "The Matrix", "Gladiator"]
     };
 
-    let currentPin = null;
+    let roomKey = null;
+    let roomName = null;
+    let roomPin = null;
     let myName = null;
     let isHost = false;
 
+    // Auto-Rejoin
     window.onload = () => {
+        const savedRoom = localStorage.getItem('impostor_room');
         const savedPin = localStorage.getItem('impostor_pin');
         const savedName = localStorage.getItem('impostor_name');
-        if (savedPin && savedName) {
-            currentPin = savedPin;
+
+        if (savedRoom && savedPin && savedName) {
+            roomName = savedRoom;
+            roomPin = savedPin;
             myName = savedName;
+            roomKey = `${roomName}_${roomPin}`.toLowerCase().replace(/\s+/g, '');
             rejoinSession();
         }
     };
@@ -152,51 +178,56 @@
     }
 
     function createRoom() {
-        const hostName = document.getElementById('host-name').value.trim();
-        if (!hostName) return alert('Enter nickname!');
-
-        currentPin = Math.floor(1000 + Math.random() * 9000).toString();
-        myName = hostName;
-        isHost = true;
-
-        localStorage.setItem('impostor_pin', currentPin);
-        localStorage.setItem('impostor_name', myName);
-
+        roomName = document.getElementById('create-room-name').value.trim();
+        roomPin = document.getElementById('create-room-pin').value.trim();
+        myName = document.getElementById('host-nickname').value.trim();
         const category = document.getElementById('category').value;
 
-        db.ref('rooms/' + currentPin).set({
+        if (!roomName || !roomPin || !myName) return alert('Fill in all fields!');
+
+        roomKey = `${roomName}_${roomPin}`.toLowerCase().replace(/\s+/g, '');
+        isHost = true;
+
+        localStorage.setItem('impostor_room', roomName);
+        localStorage.setItem('impostor_pin', roomPin);
+        localStorage.setItem('impostor_name', myName);
+
+        db.ref('rooms/' + roomKey).set({
+            roomName: roomName,
+            pin: roomPin,
             host: myName,
             category: category,
             state: 'lobby',
-            players: { [myName]: { role: 'player' } }
+            players: { [myName]: { joined: true } }
         });
 
         listenToRoom();
     }
 
     function joinRoom() {
-        const pin = document.getElementById('join-pin').value.trim();
-        const playerName = document.getElementById('player-name').value.trim();
+        roomName = document.getElementById('join-room-name').value.trim();
+        roomPin = document.getElementById('join-room-pin').value.trim();
+        myName = document.getElementById('join-nickname').value.trim();
 
-        if (!pin || !playerName) return alert('Enter PIN and Nickname!');
+        if (!roomName || !roomPin || !myName) return alert('Fill in all fields!');
 
-        db.ref('rooms/' + pin).once('value', snapshot => {
-            if (!snapshot.exists()) return alert('Room not found!');
+        roomKey = `${roomName}_${roomPin}`.toLowerCase().replace(/\s+/g, '');
 
-            currentPin = pin;
-            myName = playerName;
+        db.ref('rooms/' + roomKey).once('value', snapshot => {
+            if (!snapshot.exists()) return alert('Room not found! Check Room Name and PIN.');
+
             isHost = false;
-
-            localStorage.setItem('impostor_pin', currentPin);
+            localStorage.setItem('impostor_room', roomName);
+            localStorage.setItem('impostor_pin', roomPin);
             localStorage.setItem('impostor_name', myName);
 
-            db.ref(`rooms/${currentPin}/players/${myName}`).set({ role: 'player' });
+            db.ref(`rooms/${roomKey}/players/${myName}`).set({ joined: true });
             listenToRoom();
         });
     }
 
     function rejoinSession() {
-        db.ref('rooms/' + currentPin).once('value', snapshot => {
+        db.ref('rooms/' + roomKey).once('value', snapshot => {
             if (snapshot.exists()) {
                 const room = snapshot.val();
                 if (room.host === myName) isHost = true;
@@ -209,7 +240,7 @@
     }
 
     function listenToRoom() {
-        db.ref('rooms/' + currentPin).on('value', snapshot => {
+        db.ref('rooms/' + roomKey).on('value', snapshot => {
             const room = snapshot.val();
             if (!room) {
                 localStorage.clear();
@@ -231,7 +262,9 @@
     }
 
     function updateLobby(room) {
-        document.getElementById('display-pin').innerText = currentPin;
+        document.getElementById('display-room-name').innerText = room.roomName;
+        document.getElementById('display-room-pin').innerText = room.pin;
+
         const playerList = document.getElementById('player-list');
         playerList.innerHTML = '';
 
@@ -256,14 +289,14 @@
 
     function startCountdown() {
         if (!isHost) return;
-        db.ref('rooms/' + currentPin).once('value', snapshot => {
+        db.ref('rooms/' + roomKey).once('value', snapshot => {
             const room = snapshot.val();
             const players = Object.keys(room.players);
             const categoryWords = wordList[room.category];
             const secretWord = categoryWords[Math.floor(Math.random() * categoryWords.length)];
             const impostorName = players[Math.floor(Math.random() * players.length)];
 
-            db.ref(`rooms/${currentPin}`).update({
+            db.ref(`rooms/${roomKey}`).update({
                 secretWord: secretWord,
                 impostor: impostorName,
                 state: 'countdown'
@@ -283,7 +316,7 @@
             } else {
                 clearInterval(interval);
                 if (isHost) {
-                    db.ref(`rooms/${currentPin}`).update({ state: 'ingame' });
+                    db.ref(`rooms/${roomKey}`).update({ state: 'ingame' });
                 }
             }
         }, 1000);
@@ -314,7 +347,7 @@
 
     function resetRoom() {
         if (!isHost) return;
-        db.ref(`rooms/${currentPin}`).update({ state: 'lobby' });
+        db.ref(`rooms/${roomKey}`).update({ state: 'lobby' });
     }
 </script>
 
