@@ -3,164 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who is the Impostor?</title>
+    <title>IMPOSTOR — Party Word Game</title>
     <style>
-        * { 
-            box-sizing: border-box; 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
-        body { 
-            background: radial-gradient(circle at center, #1b263b, #0b132b); 
-            color: #fff; 
-            text-align: center; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
+        body {
+            background-color: #0f0c1b;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
         }
 
-        .card { 
-            background: #1c2541; 
-            border-radius: 20px; 
-            padding: 25px; 
-            width: 100%; 
-            max-width: 420px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7), 0 0 15px rgba(255, 0, 127, 0.2); 
-            animation: fadeIn 0.5s ease-out forwards;
+        /* NAVBAR */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(15, 12, 27, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        h1 { 
-            color: #ff007f; 
-            margin-bottom: 20px; 
-            font-size: 28px; 
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
         }
 
-        label { 
-            display: block; 
-            text-align: left; 
-            margin-top: 15px; 
-            font-weight: 600; 
-            color: #8d99ae; 
+        .logo span {
+            color: #ff0055;
         }
 
-        input, select, textarea, button { 
-            width: 100%; 
-            padding: 14px; 
-            margin-top: 8px; 
-            border-radius: 12px; 
-            border: none; 
-            font-size: 16px; 
-            outline: none; 
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
         }
 
-        input, select, textarea { 
-            background: #0b132b; 
-            color: #fff; 
-            border: 1px solid #3a506b; 
-            transition: border 0.3s ease, box-shadow 0.3s ease;
+        nav a {
+            color: #a0a0b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: #ff0055;
+        }
+
+        .btn-nav {
+            background: #ff0055;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-nav:hover {
+            background: #e0004c;
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.7);
+        }
+
+        /* HERO SECTION */
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero-title span {
+            color: #ff0055;
+            text-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+        }
+
+        .hero-subtitle {
+            color: #8a8aa3;
+            font-size: 16px;
+            max-width: 550px;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* GAME BOARD CARD */
+        .game-card {
+            background: #181528;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 35px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            position: relative;
+        }
+
+        .game-card h2 {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        label {
+            display: block;
+            color: #8a8aa3;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: #0f0c1b;
+            border: 1px solid #2a2640;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: #ff007f;
-            box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+            border-color: #ff0055;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
         }
 
-        textarea { 
-            resize: vertical; 
-            height: 70px; 
+        textarea {
+            resize: vertical;
+            height: 75px;
         }
 
-        button { 
-            background: #ff007f; 
-            color: #fff; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: all 0.2s ease-in-out; 
-            margin-top: 15px; 
-            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
+        .btn-action {
+            width: 100%;
+            padding: 16px;
+            background: #ff0055;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 5px 20px rgba(255, 0, 85, 0.4);
+            transition: 0.3s;
         }
 
-        button:hover { 
-            background: #e0006c; 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 20px rgba(255, 0, 127, 0.5);
+        .btn-action:hover {
+            background: #e0004c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 0, 85, 0.6);
         }
 
-        button:active { 
-            transform: translateY(0); 
+        .hidden {
+            display: none !important;
         }
 
-        .hidden { 
-            display: none !important; 
+        /* FLIP CARD ANIMATION */
+        .card-container {
+            perspective: 1000px;
+            margin: 20px 0;
+            height: 150px;
         }
 
-        .card-container { 
-            perspective: 1000px; 
-            margin: 25px 0; 
-            height: 160px; 
+        .flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
         }
 
-        .flipper { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); 
-            transform-style: preserve-3d; 
+        .flipper.flipped {
+            transform: rotateY(180deg);
         }
 
-        .flipper.flipped { 
-            transform: rotateY(180deg); 
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            padding: 15px;
+            text-align: center;
         }
 
-        .front, .back { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            backface-visibility: hidden; 
-            border-radius: 14px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 22px; 
-            font-weight: bold; 
-            padding: 15px; 
-            box-sizing: border-box; 
+        .front {
+            background: #221d38;
+            color: #8a8aa3;
+            border: 2px dashed #3d3560;
         }
 
-        .front { 
-            background: #3a506b; 
-            color: #5bc0be; 
-            border: 2px dashed #5bc0be; 
-            box-shadow: inset 0 0 10px rgba(91, 192, 190, 0.2);
+        .back {
+            background: #0077ff;
+            color: #fff;
+            transform: rotateY(180deg);
+            box-shadow: 0 0 20px rgba(0, 119, 255, 0.4);
         }
 
-        .back { 
-            background: #0077b6; 
-            color: #fff; 
-            transform: rotateY(180deg); 
-            box-shadow: 0 0 15px rgba(0, 119, 182, 0.5);
-        }
-
-        .back.impostor { 
-            background: #d90429; 
-            color: #fff; 
-            box-shadow: 0 0 20px rgba(217, 4, 41, 0.8);
+        .back.impostor {
+            background: #ff0055;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.6);
             animation: shake 0.4s ease-in-out 0.6s;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* STATS SECTION (BOTTOM CARDS) */
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: #181528;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 20px 30px;
+            text-align: center;
+            min-width: 220px;
+            flex: 1;
+        }
+
+        .stat-info h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stat-info p {
+            font-size: 12px;
+            color: #8a8aa3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
         }
 
         @keyframes shake {
@@ -170,59 +297,114 @@
             60% { transform: rotateY(180deg) translateX(-5px); }
             80% { transform: rotateY(180deg) translateX(5px); }
         }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 5%; }
+            nav { display: none; }
+            .hero-title { font-size: 32px; }
+            .stats-container { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Who is the Impostor? 🕵️‍♂️</h1>
+    <!-- NAVBAR -->
+    <header>
+        <div class="logo">
+            PLAY<span>IMPOSTOR</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Rules</a></li>
+                <li><a href="#">Categories</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+        <button class="btn-nav" onclick="resetGame()">New Game</button>
+    </header>
 
-    <!-- 1. SETUP SCREEN -->
-    <div id="setup-screen">
-        <label for="player-count">Number of Players:</label>
-        <input type="number" id="player-count" min="3" max="15" value="4">
-        
-        <label for="category">Category:</label>
-        <select id="category" onchange="toggleCustomCategory()">
-            <option value="food">Food & Drinks 🍔</option>
-            <option value="cities">Global Cities 🏙️</option>
-            <option value="objects">Everyday Objects 📦</option>
-            <option value="movies">Movies & Shows 🎬</option>
-            <option value="custom">Custom Words... ✨</option>
-        </select>
+    <!-- MAIN HERO CONTENT -->
+    <main>
+        <h1 class="hero-title">FIND THE <span>IMPOSTOR</span></h1>
+        <p class="hero-subtitle">Pass the device around, keep your secret word hidden, and uncover the liar among your friends.</p>
 
-        <div id="custom-words-wrapper" class="hidden">
-            <label for="custom-words">Custom Words (comma separated):</label>
-            <textarea id="custom-words" placeholder="e.g. Bitcoin, Coffee, Guitar, Astronaut"></textarea>
+        <!-- GAME BOARD -->
+        <div class="game-card">
+            
+            <!-- 1. SETUP SCREEN -->
+            <div id="setup-screen">
+                <h2>GAME SETUP</h2>
+
+                <label for="player-count">Total Players</label>
+                <input type="number" id="player-count" min="3" max="15" value="4">
+
+                <label for="category">Word Set</label>
+                <select id="category" onchange="toggleCustomCategory()">
+                    <option value="food">Food & Drinks</option>
+                    <option value="cities">Global Cities</option>
+                    <option value="objects">Everyday Objects</option>
+                    <option value="movies">Movies & Shows</option>
+                    <option value="custom">Custom Words...</option>
+                </select>
+
+                <div id="custom-words-wrapper" class="hidden">
+                    <label for="custom-words">Custom Words (Comma Separated)</label>
+                    <textarea id="custom-words" placeholder="e.g. Bitcoin, Coffee, Guitar, Astronaut"></textarea>
+                </div>
+
+                <button class="btn-action" onclick="startGame()">Start Session</button>
+            </div>
+
+            <!-- 2. ROLE CHECK SCREEN -->
+            <div id="role-screen" class="hidden">
+                <h2 id="player-title">Player 1</h2>
+                <p style="color: #8a8aa3; font-size: 13px; text-align: center;">Pass the phone. Tap to reveal your secret role.</p>
+
+                <div class="card-container">
+                    <div id="flipper" class="flipper">
+                        <div class="front">Tap to Reveal</div>
+                        <div id="role-back" class="back">...</div>
+                    </div>
+                </div>
+
+                <button id="reveal-btn" class="btn-action" onclick="flipCard()">Show Secret Word</button>
+                <button id="next-btn" class="btn-action hidden" onclick="nextPlayer()">Pass To Next Player</button>
+            </div>
+
+            <!-- 3. GAMEPLAY SCREEN -->
+            <div id="game-screen" class="hidden">
+                <h2 style="color: #ff0055;">MATCH STARTED</h2>
+                <p style="color: #fff; font-size: 15px; text-align: center; margin-top: 15px;">Take turns giving 1 subtle clue about the secret word.</p>
+                <p style="color: #8a8aa3; font-size: 13px; text-align: center; margin-top: 10px;">The Impostor must blend in without getting caught.</p>
+                <button class="btn-action" onclick="resetGame()">Play Again</button>
+            </div>
+
         </div>
 
-        <button onclick="startGame()">Start Game</button>
-    </div>
-
-    <!-- 2. ROLE CHECK SCREEN -->
-    <div id="role-screen" class="hidden">
-        <h2 id="player-title">Player 1</h2>
-        <p>Pass the phone to this player. Tap to flip and reveal the secret word!</p>
-        
-        <div class="card-container">
-            <div id="flipper" class="flipper">
-                <div class="front">Tap to Reveal 🔒</div>
-                <div id="role-back" class="back">...</div>
+        <!-- STATS / INFO BOTTOM CARDS -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>100% Free</h3>
+                    <p>No Ads / No Paywall</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>1 Device</h3>
+                    <p>Pass & Play Mode</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Instant</h3>
+                    <p>No App Install</p>
+                </div>
             </div>
         </div>
 
-        <button id="reveal-btn" onclick="flipCard()">Show Word</button>
-        <button id="next-btn" class="hidden" onclick="nextPlayer()">Pass to Next Player</button>
-    </div>
-
-    <!-- 3. GAMEPLAY SCREEN -->
-    <div id="game-screen" class="hidden">
-        <h2>Game Started! 🚀</h2>
-        <p>Take turns giving 1 subtle clue about the word.</p>
-        <p style="color: #8d99ae; font-size: 14px; margin-top: 15px;">The Impostor must blend in without getting caught!</p>
-        <button onclick="resetGame()">Play Again</button>
-    </div>
-</div>
+    </main>
 
 <script>
     const wordList = {
@@ -283,7 +465,7 @@
         roleBack.classList.remove('impostor');
 
         if (currentPlayer === impostorIndex) {
-            roleBack.innerText = "YOU ARE THE IMPOSTOR! 🤫";
+            roleBack.innerText = "YOU ARE THE IMPOSTOR";
             roleBack.classList.add('impostor');
         } else {
             roleBack.innerText = currentWord;
@@ -306,6 +488,7 @@
 
     function resetGame() {
         document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('role-screen').classList.add('hidden');
         document.getElementById('setup-screen').classList.remove('hidden');
     }
 </script>
